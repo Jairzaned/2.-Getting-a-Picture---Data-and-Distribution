@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics and Excel: An Interactive Introduction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #60a5fa;
+        }
+        .active-tab {
+            border-bottom: 3px solid #60a5fa;
+            color: #60a5fa;
+        }
+        canvas {
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-slate-100 min-h-screen font-sans">
+
+    <!-- Header -->
+    <header class="p-8 text-center border-b border-slate-700">
+        <h1 class="text-4xl font-extrabold text-blue-400 mb-2">Statistics & Excel</h1>
+        <p class="text-slate-400 text-lg">Understanding Patterns, Shapes, and Truths in Data</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6">
+        
+        <!-- Navigation -->
+        <nav class="flex justify-center space-x-8 mb-10 overflow-x-auto whitespace-nowrap pb-2">
+            <button onclick="showSection('intro')" id="tab-intro" class="nav-tab px-4 py-2 font-semibold active-tab">1. The Rule of Pictures</button>
+            <button onclick="showSection('shapes')" id="tab-shapes" class="nav-tab px-4 py-2 font-semibold text-slate-400">2. Distribution Shapes</button>
+            <button onclick="showSection('measures')" id="tab-measures" class="nav-tab px-4 py-2 font-semibold text-slate-400">3. Center & Spread</button>
+            <button onclick="showSection('relationships')" id="tab-relationships" class="nav-tab px-4 py-2 font-semibold text-slate-400">4. Relationships</button>
+        </nav>
+
+        <!-- Section 1: Intro -->
+        <section id="section-intro" class="content-section">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <h2 class="text-3xl font-bold">"The First Rule: Draw a Picture"</h2>
+                    <p class="text-slate-300 leading-relaxed">
+                        In a world overflowing with "seas of numbers," the human brain struggles to intuit raw data tables. Statistics is the art of organizing that chaos. 
+                        Visual representations reveal patterns, outliers, and associations that remain hidden in lists of figures.
+                    </p>
+                    <div class="bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-500 italic">
+                        "Visualization isn't just for 'normal people'—it's how the smartest minds, including Einstein, intuits complex physics before the math takes over."
+                    </div>
+                </div>
+                <div class="card p-6 rounded-xl text-center">
+                    <div class="text-5xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold mb-2">Data Communication</h3>
+                    <p class="text-sm text-slate-400">The goal isn't just to analyze, but to tell a story that expresses the <strong>truth</strong> about the data while being aware of how it can be manipulated.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Shapes -->
+        <section id="section-shapes" class="content-section hidden">
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <div onclick="drawShape('bell')" class="card p-6 rounded-xl cursor-pointer">
+                    <h3 class="text-lg font-bold text-blue-400">Symmetrical (Bell)</h3>
+                    <p class="text-sm text-slate-400">Most data points cluster in the middle, tapering off equally to both sides.</p>
+                </div>
+                <div onclick="drawShape('skewed')" class="card p-6 rounded-xl cursor-pointer">
+                    <h3 class="text-lg font-bold text-blue-400">Skewed (Tail)</h3>
+                    <p class="text-sm text-slate-400">Data has a "tail" on one side, showing extreme values pulling the average.</p>
+                </div>
+                <div onclick="drawShape('bimodal')" class="card p-6 rounded-xl cursor-pointer">
+                    <h3 class="text-lg font-bold text-blue-400">Bimodal (Camel)</h3>
+                    <p class="text-sm text-slate-400">Two distinct humps, suggesting two different groups within your data.</p>
+                </div>
+            </div>
+            <div class="card p-6 rounded-xl bg-slate-800/50">
+                <canvas id="shapeChart"></canvas>
+                <div class="mt-4 text-center text-slate-400 text-sm">Interactive Histogram Mockup</div>
+            </div>
+        </section>
+
+        <!-- Section 3: Center & Spread -->
+        <section id="section-measures" class="content-section hidden">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card p-8 rounded-xl space-y-6">
+                    <h2 class="text-2xl font-bold border-b border-slate-700 pb-2">Finding the Middle</h2>
+                    <div>
+                        <span class="text-blue-400 font-bold">Mean:</span> The mathematical average.
+                    </div>
+                    <div>
+                        <span class="text-blue-400 font-bold">Median:</span> The exact physical middle point of a sorted list.
+                    </div>
+                    <div class="bg-slate-700/30 p-4 rounded text-sm">
+                        Excel simplifies this through sorting and functions, allowing us to identify <strong>Quartiles</strong> (breaking data into four parts).
+                    </div>
+                </div>
+                <div class="card p-8 rounded-xl space-y-6">
+                    <h2 class="text-2xl font-bold border-b border-slate-700 pb-2">Measuring the Spread</h2>
+                    <p class="text-slate-300">Finding the center is only half the battle. We must know how concentrated or spread out the data is.</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-full bg-slate-700 rounded-full h-4 overflow-hidden flex">
+                            <div class="bg-blue-500 h-full" style="width: 20%; margin-left: 40%;"></div>
+                        </div>
+                        <span class="text-xs">Tight</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-full bg-slate-700 rounded-full h-4 overflow-hidden flex">
+                            <div class="bg-blue-400 h-full" style="width: 80%; margin-left: 10%;"></div>
+                        </div>
+                        <span class="text-xs">Wide</span>
+                    </div>
+                    <p class="text-sm text-slate-400 italic text-center">"Is everyone similar, or are there massive outliers?"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Relationships -->
+        <section id="section-relationships" class="content-section hidden">
+            <div class="card p-6 rounded-xl">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="md:w-1/3 space-y-4">
+                        <h2 class="text-2xl font-bold">Scatter Plots & Correlation</h2>
+                        <p class="text-sm text-slate-300">Does a student's SAT score predict their College GPA? We use scatter plots to see if two variables move in unison.</p>
+                        <div class="p-4 bg-red-900/20 border border-red-900/50 rounded text-sm text-red-200">
+                            <strong>Warning:</strong> Correlation does not mean Causation. Humans naturally want to assign a "why" even if the relationship is coincidental or driven by a third factor.
+                        </div>
+                        <button onclick="generateScatter()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded font-bold transition">Randomize Data</button>
+                    </div>
+                    <div class="md:w-2/3 bg-slate-900/50 p-4 rounded-lg">
+                        <canvas id="scatterChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 p-12 border-t border-slate-800 text-center text-slate-500 text-sm">
+        <p>A statistical summary built to help you look for the truth—and spot the bias.</p>
+    </footer>
+
+    <script>
+        let shapeChart, scatterChart;
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('section-' + sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.remove('active-tab');
+                t.classList.add('text-slate-400');
+            });
+            document.getElementById('tab-' + sectionId).classList.add('active-tab');
+            document.getElementById('tab-' + sectionId).classList.remove('text-slate-400');
+
+            if (sectionId === 'shapes') drawShape('bell');
+            if (sectionId === 'relationships') generateScatter();
+        }
+
+        function drawShape(type) {
+            const ctx = document.getElementById('shapeChart').getContext('2d');
+            if (shapeChart) shapeChart.destroy();
+
+            let labels = Array.from({length: 21}, (_, i) => i);
+            let data = [];
+
+            if (type === 'bell') {
+                data = [1, 2, 4, 7, 12, 18, 25, 30, 32, 30, 25, 18, 12, 7, 4, 2, 1, 0, 0, 0, 0];
+            } else if (type === 'skewed') {
+                data = [35, 30, 25, 20, 15, 12, 10, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 0, 0, 0, 0];
+            } else if (type === 'bimodal') {
+                data = [5, 15, 30, 15, 5, 2, 1, 2, 5, 15, 30, 15, 5, 2, 1, 0, 0, 0, 0, 0, 0];
+            }
+
+            shapeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Frequency',
+                        data: data,
+                        backgroundColor: '#60a5fa',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#334155' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function generateScatter() {
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            if (scatterChart) scatterChart.destroy();
+
+            const data = Array.from({length: 50}, () => {
+                const sat = 800 + Math.random() * 800;
+                // Add some correlation but with randomness (noise)
+                const gpa = (sat / 1600) * 3 + 1 + (Math.random() - 0.5); 
+                return { x: sat, y: Math.min(4, Math.max(0, gpa)) };
+            });
+
+            scatterChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Student Correlation',
+                        data: data,
+                        backgroundColor: '#60a5fa'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: 'SAT Score', color: '#94a3b8' }, grid: { color: '#334155' } },
+                        y: { title: { display: true, text: 'GPA', color: '#94a3b8' }, grid: { color: '#334155' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // Initialize first section
+        window.onload = () => showSection('intro');
+    </script>
+</body>
+</html>
